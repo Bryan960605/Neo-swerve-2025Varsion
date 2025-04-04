@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import frc.robot.commands.AutoCommand;
 import frc.robot.commands.ManualDrive;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -53,6 +54,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return new AutoCommand(m_swervesubsystem);
   }
 }
