@@ -51,7 +51,7 @@ public class SwerveModule extends SubsystemBase{
         driveMotorConfig.idleMode(IdleMode.kBrake);
         turningMotorConfig.idleMode(IdleMode.kBrake);
 
-        cancoderConfig.MagnetSensor.MagnetOffset = absoluteEncoderOffsetDegree/360;
+        cancoderConfig.MagnetSensor.MagnetOffset = absoluteEncoderOffsetDegree;
         cancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
         driveEncoder = driveMotor.getEncoder();
