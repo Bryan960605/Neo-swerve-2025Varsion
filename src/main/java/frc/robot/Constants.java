@@ -41,12 +41,11 @@ public final class Constants {
     public static final double turningEncoderRot2Rad = turningMotorGearRatio*2*Math.PI;
     public static final double driveEncoderRPM2MeterPerSec = driveEncoderRot2Meter/60.0;
     public static final double turningEncoderRPM2RadPerSec = turningEncoderRot2Rad/60.0;
-    public static final double turningMotorkP = 0.005;
+    public static final double turningMotorkP = 0.06;
     public static final double turningMotorKI = 0;
     public static final double turningMotorKD = 0;
-    public static final double drivingMotorKP = 0;
-    public static final double drivingMotorKI = 0;
-    public static final double drivingMotorKD = 0;
+    public static final double driveFeedforward_Ks = 0.13;
+    public static final double driveFeedforward_Kv = 2.58;
     public static final double maxDriveMotorSpeed = 4.0;
     public static final double maxAngularVelocity = 3.0 * Math.PI;
   }
@@ -67,36 +66,35 @@ public final class Constants {
     public static final int leftRearCANCoderID = 44;
     public static final int rightRearCANCoderID = 41;
 
+    public static final int gyroID = 10;
+
     public static final double leftFrontOffset = 0.4052734375;
     public static final double rightFrontOffset = 0.141845703125;
     public static final double leftRearOffset = -0.11767578125;
     public static final double rightRearOffset = 0.174072265625;
 
     public static final boolean leftFrontdriveMotorReversed = true;
-    public static final boolean leftFrontTurningMotorReversed = true;
     public static final boolean rightFrontDriveMotorReversed = true;
-    public static final boolean rightfrontTurningMotorReversed = true;
     public static final boolean leftRearDriveMotorreversed = false;
-    public static final boolean leftRearTurningMotorReversed = true;
     public static final boolean rightRearDriveMotorReversed = false;
-    public static final boolean rightRearTurningMotorReversed = true;
-    
-    public static double joysickValue(double value, double mineOutput){
-      if(Math.abs(value) < mineOutput){
-        return 0;
-      }
-      else{
-        return value;
-      }
-    }
 
-    public static final int gyroID = 10;
     //front left, front right, rear left, rear right
     public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
       new Translation2d(robotLength/2, robotWidth/2), 
       new Translation2d(robotLength/2, -robotWidth/2), 
       new Translation2d(-robotLength/2, robotWidth/2),
       new Translation2d(-robotLength/2, -robotWidth/2)
-  );
+    );
+
+    public static final double pathingMoving_Kp = 0;
+    public static final double pathingMoving_Ki = 0;
+    public static final double pathingMoving_Kd = 0;
+
+    public static final double pathingtheta_Kp = 0;
+    public static final double pathingtheta_Ki = 0;
+    public static final double pathingtheta_Kd = 0;
+
+    public static final double maxDriveSpeed_MeterPerSecond = 5;
+    public static final double maxAngularVelocity_Angle = 850;
   }
 }

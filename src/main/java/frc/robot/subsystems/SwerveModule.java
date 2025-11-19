@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -29,13 +30,13 @@ public class SwerveModule extends SubsystemBase{
     private final RelativeEncoder turningEncoder;
 
     private final PIDController turningPIDController;
-    private final PIDController drivingPIDController;
+    private final SimpleMotorFeedforward driveFeedforward;
 
     private final CANcoder absoluteEncoder;
     private final CANcoderConfiguration cancoderConfig;
 
-    public SwerveModule(int driveMotorID, int turningMotorID, boolean driveMotorReversed, boolean turningMotorReversed, 
-                        int absoluteEncoderID, double absoluteEncoderOffsetDegree){
+    public SwerveModule(int driveMotorID, int turningMotorID, boolean driveMotorReversed,
+                        int absoluteEncoderID, double absoluteEncoderOffset){
         absoluteEncoder = new CANcoder(absoluteEncoderID);
         cancoderConfig = new CANcoderConfiguration();
 
@@ -46,12 +47,12 @@ public class SwerveModule extends SubsystemBase{
         turningMotorConfig = new SparkMaxConfig();
 
         driveMotorConfig.inverted(driveMotorReversed);
-        turningMotorConfig.inverted(turningMotorReversed);
+        turningMotorConfig.inverted(true);
 
         driveMotorConfig.idleMode(IdleMode.kBrake);
         turningMotorConfig.idleMode(IdleMode.kBrake);
 
-        cancoderConfig.MagnetSensor.MagnetOffset = absoluteEncoderOffsetDegree;
+        cancoderConfig.MagnetSensor.MagnetOffset = absoluteEncoderOffset;
         cancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
         driveEncoder = driveMotor.getEncoder();
@@ -62,8 +63,7 @@ public class SwerveModule extends SubsystemBase{
 
         turningPIDController = new PIDController(SwerveModuleConstants.turningMotorkP, SwerveModuleConstants.turningMotorKI, SwerveModuleConstants.turningMotorKD);
         turningPIDController.enableContinuousInput(-180, 180);
-
-        drivingPIDController = new PIDController(SwerveModuleConstants.drivingMotorKP, SwerveModuleConstants.drivingMotorKI, SwerveModuleConstants.drivingMotorKD);
+        driveFeedforward = new SimpleMotorFeedforward(SwerveModuleConstants.driveFeedforward_Ks, SwerveModuleConstants.driveFeedforward_Kv);
         
         resetEncoders();
     }
@@ -97,8 +97,8 @@ public class SwerveModule extends SubsystemBase{
      
     public void setDesiredState(SwerveModuleState state){
         state.optimize(getState().angle);
-        double drivingOutput = state.speedMetersPerSecond / SwerveModuleConstants.maxDriveMotorSpeed + drivingPIDController.calculate(getState().speedMetersPerSecond, state.speedMetersPerSecond);
-        driveMotor.set(drivingOutput);
+        double driveMotorOutput = driveFeedforward.calculate(state.speedMetersPerSecond);
+        driveMotor.setVoltage(driveMotorOutput);
         turningMotor.set(turningPIDController.calculate(getState().angle.getDegrees(),state.angle.getDegrees()));
     }
 

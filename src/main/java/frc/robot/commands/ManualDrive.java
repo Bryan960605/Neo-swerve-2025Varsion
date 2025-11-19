@@ -56,18 +56,19 @@ public class ManualDrive extends Command {
     zSpeed = MathUtil.applyDeadband(zSpeed, 0.1);
 
     if(slowbtn.getAsBoolean()){
-      xSpeed = xSpeed*0.4;
-      ySpeed = ySpeed*0.4;
-      zSpeed = zSpeed*0.4;
+      xSpeed = xSpeed * 0.4;
+      ySpeed = ySpeed * 0.4;
+      zSpeed = zSpeed * 0.4;
     }else{
-      xSpeed = xSpeed*0.9;
-      ySpeed = ySpeed*0.9;
-      zSpeed = zSpeed*0.9;
+      xSpeed = xSpeed * 0.9;
+      ySpeed = ySpeed * 0.9;
+      zSpeed = zSpeed * 0.9;
     }
 
     xSpeed = xLimiter.calculate(xSpeed);
     ySpeed = yLimiter.calculate(ySpeed);
     zSpeed = zLimiter.calculate(zSpeed);
+    
     m_swerveSubsystem.drive(xSpeed, ySpeed, zSpeed, true);
   }
 
